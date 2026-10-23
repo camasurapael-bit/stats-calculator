@@ -1,0 +1,55 @@
+/* ===== Blue calculator theme (matches the app icon) ===== */
+:root, [data-theme="dark"] {
+  --bg-0: #060d20; --bg-1: #0b1738;
+  --glass: rgba(120,160,255,.07); --glass-strong: rgba(120,160,255,.12); --glass-border: rgba(120,160,255,.2);
+  --border: rgba(120,160,255,.18); --border-bright: rgba(140,180,255,.38);
+  --text: #eaf1ff; --text-dim: #9fb3dc; --text-faint: #6a80b0;
+  --accent: #4f8bff; --accent-2: #7db4ff; --accent-3: #5ac8fa;
+  --input-bg: rgba(4,10,30,.5); --glow: rgba(79,139,255,.45); --grid-line: rgba(140,180,255,.1);
+  --header-bg: rgba(8,16,40,.8); --scroll-thumb: rgba(140,180,255,.25);
+}
+[data-theme="light"] {
+  --bg-0: #f5f9ff; --bg-1: #e3edff;
+  --glass: rgba(255,255,255,.9); --glass-strong: #ffffff; --glass-border: rgba(37,99,235,.16);
+  --border: rgba(37,99,235,.18); --border-bright: rgba(37,99,235,.4);
+  --text: #0d1b42; --text-dim: #465b8c; --text-faint: #8497c0;
+  --accent: #2563eb; --accent-2: #3b82f6; --accent-3: #1d4ed8;
+  --input-bg: #f1f6ff; --card-shadow: 0 10px 30px -12px rgba(30,64,175,.28); --glow: rgba(37,99,235,.28);
+  --grid-line: rgba(37,99,235,.1); --header-bg: rgba(255,255,255,.92); --scroll-thumb: rgba(37,99,235,.3);
+}
+body {
+  background:
+    radial-gradient(1100px 650px at 90% -10%, rgba(59,130,246,.16), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(14,165,233,.10), transparent 55%),
+    linear-gradient(165deg, var(--bg-0), var(--bg-1) 75%);
+  background-attachment: fixed;
+}
+.shape-1 { background: rgba(59,130,246,.28); }
+.shape-2 { background: rgba(14,165,233,.20); }
+.shape-3 { background: rgba(37,99,235,.16); }
+.shape-4 { background: rgba(96,165,250,.20); }
+[data-theme="light"] .shape { opacity: .35; }
+
+/* header + logo (the icon image) */
+.logo-icon { background: none; box-shadow: 0 6px 18px var(--glow); animation: none; overflow: hidden; border-radius: 12px; }
+.logo-icon img { width: 100%; height: 100%; display: block; }
+.app-header h1 { background-image: linear-gradient(92deg, var(--text) 20%, var(--accent) 100%); }
+
+/* blue gradients */
+.btn-primary, .mode-tab.active { background: linear-gradient(135deg, #1d4ed8 0%, #4f9bff 100%); }
+.step-dot, .sol-h::before { background: linear-gradient(135deg, #1d4ed8, #4f9bff); }
+.data-input:focus { box-shadow: 0 0 0 4px rgba(59,130,246,.18), 0 0 24px rgba(59,130,246,.12); }
+.glass-select:focus, .g-row input:focus { box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+.metric-card:nth-child(1) { --mc1: #2563eb; --mc2: #60a5fa; --mcGlow: rgba(37,99,235,.12); }
+.metric-card:nth-child(2) { --mc1: #1d4ed8; --mc2: #38bdf8; --mcGlow: rgba(29,78,216,.12); }
+.metric-card:nth-child(3) { --mc1: #0ea5e9; --mc2: #2563eb; --mcGlow: rgba(14,165,233,.12); }
+.metric-card:nth-child(4) { --mc1: #60a5fa; --mc2: #2563eb; --mcGlow: rgba(96,165,250,.12); }
+
+/* panels on white cards need a soft blue tint */
+.eq, .legend, .note { background: var(--input-bg); }
+[data-theme="light"] .sol-table tbody tr:nth-child(even) td { background: rgba(37,99,235,.04); }
+
+/* ===== Real hide: author display rules were overriding [hidden] ===== */
+[hidden] { display: none !important; }
+/* before the first Calculate (or after Clear) only the input card shows */
+.results[hidden] ~ .history-card { display: none; }
