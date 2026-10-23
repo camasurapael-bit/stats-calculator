@@ -447,7 +447,6 @@ inputEl.addEventListener("keydown", e => {
 });
 $("clearBtn").addEventListener("click", () => {
   inputEl.value = ""; errorEl.hidden = true; resultsEl.hidden = true; state.last = null;
-  inputEl.focus();
 });
 $("precision").addEventListener("change", () => {
   state.precision = +$("precision").value;
