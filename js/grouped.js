@@ -99,7 +99,7 @@
   function addRow(lo = "", hi = "", f = "") {
     const d = document.createElement("div");
     d.className = "g-row";
-    const inp = (ph, v, l) => `<input inputmode="decimal" autocomplete="off" placeholder="${ph}" aria-label="${l}" value="${v}">`;
+    const inp = (ph, v, l) => `<input inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="${ph}" aria-label="${l}" value="${v}">`;
     d.innerHTML = inp("50", lo, "Lower limit") + inp("54", hi, "Upper limit") + inp("1", f, "Frequency") +
       `<button type="button" class="g-del" aria-label="Remove row">✕</button>`;
     rowsEl.appendChild(d);

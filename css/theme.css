@@ -97,60 +97,6 @@ body {
 /* ===== math background canvas ===== */
 #mathBg { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-/* ===== MOBILE: first screen (before Calculate) fits fully, no scrolling ===== */
-@media (max-width: 640px) {
-  body { min-height: 0; }
-  .app { gap: 8px; padding: 6px 10px 10px; }
-  .results[hidden] ~ .app-footer { display: none; }   /* nothing below the fold before Calculate */
-
-  .app-header { top: 6px; padding: 6px 10px; border-radius: 16px; }
-  .logo-icon { width: 34px; height: 34px; border-radius: 10px; }
-  .app-header h1 { font-size: 1rem; }
-  .theme-toggle { width: 36px; height: 36px; border-radius: 11px; }
-
-  .input-card { padding: 10px 12px 12px; }
-  .input-card .card-head { margin-bottom: 6px; gap: 2px; }
-  .input-card .card-head h2 { font-size: .9rem; }
-  .step-dot { width: 22px; height: 22px; font-size: .68rem; border-radius: 8px; }
-  .hint { font-size: .64rem; }
-  .mode-tabs { padding: 3px; margin-bottom: 8px; border-radius: 13px; }
-  .mode-tab { padding: 7px 4px; font-size: .72rem; border-radius: 10px; }
-
-  .data-input { height: clamp(52px, 10vh, 100px); height: clamp(52px, 10svh, 100px); min-height: 52px; padding: 8px 12px; line-height: 1.4; resize: none; border-radius: 14px; }
-  .g-row { margin-bottom: 5px; }
-  .g-row input { padding: 7px 6px; }
-  .g-del { height: 34px; }
-
-  .controls { display: grid; grid-template-columns: 84px 74px 1fr; gap: 8px; align-items: end; margin-top: 8px; }
-  .precision-group { order: 1; gap: 3px; }
-  #clearBtn { order: 2; height: 40px; padding: 0; font-size: .85rem; }
-  #calcBtn { order: 3; grid-column: auto; height: 40px; padding: 0 8px; font-size: .88rem; border-radius: 13px; }
-  .control-group label { font-size: .5rem; letter-spacing: .03em; white-space: nowrap; }
-  .glass-select { height: 40px; padding: 0 8px; font-size: .85rem; }
-
-  .sample-row { margin-top: 8px; padding-top: 8px; }
-
-  /* KPI boxes: compact 2x2 tiles (icon left, text right) */
-  #metricGrid { gap: 8px; }
-  .metric-card { display: grid; grid-template-columns: 30px 1fr; column-gap: 9px; align-items: center; text-align: left; padding: 8px 10px; border-radius: 16px; }
-  .metric-icon { grid-row: 1 / span 3; grid-column: 1; width: 30px; height: 30px; margin: 0; border-radius: 10px; font-size: .62rem; }
-  .metric-label { grid-column: 2; font-size: .58rem; letter-spacing: .1em; }
-  .metric-value, .metric-sub { grid-column: 2; font-size: 1.3rem; margin-top: 0; line-height: 1.15; }
-  .metric-mini { grid-column: 2; font-size: .58rem; margin-top: 1px; }
-}
-
-/* ===== custom number pad (phones) ===== */
-.numpad { position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--header-bg); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); border-top: 1px solid var(--border-bright); border-radius: 20px 20px 0 0; box-shadow: 0 -14px 40px rgba(0,0,0,.35); animation: npUp .22s ease; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
-@keyframes npUp { from { transform: translateY(100%); } to { transform: none; } }
-.np-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: .68rem; color: var(--text-dim); margin-bottom: 7px; padding: 0 2px; }
-.np-head b { color: var(--accent-2); }
-.np-head button { border: 1px solid var(--border); background: var(--glass-strong); color: var(--text); border-radius: 999px; padding: 5px 12px; font-size: .72rem; font-weight: 650; font-family: inherit; }
-.np-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.np-grid button { height: 44px; border: 1px solid var(--border); border-radius: 12px; background: var(--glass-strong); color: var(--text); font-size: 1.2rem; font-weight: 650; font-family: inherit; touch-action: manipulation; }
-.np-grid button:active { background: var(--accent); color: #fff; }
-.np-grid .np-act { background: var(--input-bg); color: var(--accent-2); }
-body.pad-open .app { padding-bottom: 270px; }
-
 /* ===== highlighted sample buttons ===== */
 .sample-row .hint { color: var(--text-dim); font-weight: 600; }
 .sample-row .btn-chip {
@@ -220,28 +166,3 @@ body.pad-open .app { padding-bottom: 270px; }
 @keyframes dropIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
 .app-header { animation: dropIn .6s cubic-bezier(.22,1,.36,1) both; }
 .input-card { animation: popIn .7s .12s cubic-bezier(.22,1,.36,1) both; }
-
-/* ================================================================
-   MOBILE FIRST SCREEN: fill the whole screen exactly (no empty gap, no scroll)
-   before Calculate. The input box stretches, KPI tiles are full size again.
-   ================================================================ */
-@media (max-width: 640px) {
-  /* full-size KPI tiles (icon on top, big number) */
-  #metricGrid .metric-card { display: block; padding: 12px 14px 11px; border-radius: 20px; }
-  #metricGrid .metric-icon { width: 34px; height: 34px; margin: 0 0 8px; border-radius: 11px; font-size: .7rem; }
-  #metricGrid .metric-label { font-size: .62rem; }
-  #metricGrid .metric-value, #metricGrid .metric-sub { font-size: 1.75rem; margin-top: 4px; }
-  #metricGrid .metric-mini { font-size: .62rem; margin-top: 5px; }
-
-  /* idle state = results still hidden */
-  .app:has(.results[hidden]) { height: 100vh; height: 100dvh; padding-bottom: 10px; }
-  .app:has(.results[hidden]) .app-header,
-  .app:has(.results[hidden]) #metricGrid { flex: 0 0 auto; }
-  .app:has(.results[hidden]) .input-card { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
-  .app:has(.results[hidden]) .input-card > * { flex: 0 0 auto; }
-  .app:has(.results[hidden]) #rawBlock { flex: 1 1 auto; min-height: 0; display: flex; }
-  .app:has(.results[hidden]) #rawBlock .data-input { flex: 1 1 auto; height: auto; min-height: 60px; }
-  .app:has(.results[hidden]) #groupedBlock { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-  /* number pad open: give the room to the input, hide the KPI tiles behind it */
-  body.pad-open .app:has(.results[hidden]) #metricGrid { display: none; }
-}
