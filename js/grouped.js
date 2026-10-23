@@ -17,6 +17,12 @@
     (foot ? `<tfoot><tr>${foot.map(c => `<td>${c}</td>`).join("")}</tr></tfoot>` : "") + `</table>`;
 
   let mode = "raw";
+  function resetCards() {
+    ["meanVal", "medianVal", "modeVal", "stdMain", "stdSub"].forEach(id => (g(id).textContent = "—"));
+    g("metricGrid").classList.add("is-empty");
+  }
+  const showCards = () => g("metricGrid").classList.remove("is-empty");
+  const toCards = () => { if (window.innerWidth < 760) g("metricGrid").scrollIntoView({ behavior: "smooth", block: "start" }); };
 
   /* ---------- variance table + s², s, σ², σ ---------- */
   function varianceBlock(rows, mean, n, withClass) {
@@ -167,7 +173,7 @@
       const tot = C.reduce((a, c) => a + c.f, 0);
       if (tot < Stats.MIN) throw new Error(`Minimum of ${Stats.MIN} values required — your total frequency (Σf) is ${tot}.`);
     } catch (e) {
-      errorEl.textContent = "⚠ " + e.message; errorEl.hidden = false; res.hidden = true; return;
+      errorEl.textContent = "⚠ " + e.message; errorEl.hidden = false; res.hidden = true; resetCards(); return;
     }
     const n = C[C.length - 1].cf;
     const sumFx = C.reduce((a, c) => a + c.f * c.x, 0), mean = sumFx / n;
@@ -205,18 +211,19 @@
     html += h("Final Summary") + summary(summaryRows(n, mean, med, N(mo), v));
 
     // fill UI
+    showCards();
     g("meanVal").textContent = N(mean);
     g("medianVal").textContent = N(med);
     g("modeVal").textContent = N(mo);
     g("stdMain").textContent = N(v.s === null ? v.p : v.s);
     g("stdSub").textContent = v.s === null ? "sample s: needs n ≥ 2" : `population σ = ${N(v.p)}`;
     g("solutionBody").innerHTML = LEGEND(n) + html;
-    g("fullStatsCard").hidden = true; g("freqCard").hidden = true;
-    g("distDot").textContent = "2"; g("solDot").textContent = "3";
+    g("fullStatsCard").hidden = true;
+    g("solDot").textContent = "2"; g("distDot").textContent = "3";
     state.last = { r: {}, values: [], grouped: C };
     res.hidden = false;
     renderHistogram(null, null);
-    if (window.innerWidth < 760) res.scrollIntoView({ behavior: "smooth", block: "start" });
+    toCards();
   }
 
   function drawGroupedHist(C) {
@@ -242,22 +249,24 @@
     console.error(e);
     const er = g("inputError");
     er.textContent = "⚠ Something went wrong while calculating. Please check your data.";
-    er.hidden = false; g("results").hidden = true; state.last = null;
+    er.hidden = false; g("results").hidden = true; state.last = null; resetCards();
   }
   window.calculate = function () {
     try {
       if (mode === "grouped") return calcGrouped();
       origCalc();
-      if (g("results").hidden || !state.last) return;       // not valid -> nothing is shown
-      g("fullStatsCard").hidden = false; g("freqCard").hidden = false;
-      g("distDot").textContent = "3"; g("solDot").textContent = "4";
+      if (g("results").hidden || !state.last) { resetCards(); return; }   // not valid -> nothing is shown
+      showCards();
+      g("fullStatsCard").hidden = false;
+      g("solDot").textContent = "3"; g("distDot").textContent = "4";
       g("solutionBody").innerHTML = LEGEND(state.last.r.n) + rawSolution(state.last.r, state.last.values);
       renderHistogram(state.last.values, state.last.r);       // redraw now that results are visible (correct width)
+      toCards();
     } catch (e) { failSafe(e); }
   };
 
   // editing the data makes old results stale -> hide them until Calculate is pressed again
-  const staleHide = () => { if (!g("results").hidden) { g("results").hidden = true; state.last = null; } };
+  const staleHide = () => { if (!g("results").hidden) { g("results").hidden = true; state.last = null; resetCards(); } };
   g("dataInput").addEventListener("input", staleHide);
   rowsEl.addEventListener("input", staleHide);
 
@@ -267,6 +276,7 @@
   newBtn.addEventListener("click", () => window.calculate());
 
   g("clearBtn").addEventListener("click", () => {
+    resetCards();
     if (mode === "grouped") { resetRows(); g("inputError").hidden = true; g("results").hidden = true; state.last = null; }
   });
 
@@ -278,7 +288,7 @@
     g("rawBlock").hidden = gr; g("groupedBlock").hidden = !gr;
     g("rawSamples").hidden = gr; g("groupSamples").hidden = !gr;
     g("rawHint").hidden = gr; g("groupHint").hidden = !gr;
-    g("inputError").hidden = true; g("results").hidden = true; state.last = null;
+    g("inputError").hidden = true; g("results").hidden = true; state.last = null; resetCards();
   }
   document.querySelectorAll(".mode-tab").forEach(t => t.addEventListener("click", () => setMode(t.dataset.mode)));
   resetRows();

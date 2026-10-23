@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#f5f9ff">
+<meta name="theme-color" content="#050b1d">
 <title>Statistics Calculator — Mean · Median · Mode · Std Dev</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/grouped.css">
 <link rel="stylesheet" href="css/theme.css">
 <script>
-  // Apply theme before paint to avoid flash
-  try {
-    const saved = localStorage.getItem("statsTheme");
-    const sys = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", saved || "light");
-  } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
+  // always open in dark mode (the toggle only changes the current visit)
+  document.documentElement.setAttribute("data-theme", "dark");
 </script>
 <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
@@ -29,6 +25,8 @@
   <div class="shape shape-3"></div>
   <div class="shape shape-4"></div>
 </div>
+
+<canvas id="mathBg" aria-hidden="true"></canvas>
 
 <main class="app">
 
@@ -109,33 +107,35 @@
     </div>
   </section>
 
+  <!-- KPI boxes: always visible -->
+  <!-- Key metric cards -->
+  <div class="metric-grid is-empty" id="metricGrid">
+    <div class="metric-card glass anim-pop" style="--i:0">
+      <div class="metric-icon">Σx/n</div>
+      <div class="metric-label">Mean</div>
+      <div class="metric-value" id="meanVal">—</div>
+    </div>
+    <div class="metric-card glass anim-pop" style="--i:1">
+      <div class="metric-icon">✓</div>
+      <div class="metric-label">Median</div>
+      <div class="metric-value" id="medianVal">—</div>
+    </div>
+    <div class="metric-card glass anim-pop" style="--i:2">
+      <div class="metric-icon">★</div>
+      <div class="metric-label">Mode</div>
+      <div class="metric-value" id="modeVal">—</div>
+    </div>
+    <div class="metric-card glass anim-pop" style="--i:3">
+      <div class="metric-icon">σ</div>
+      <div class="metric-label">Std Deviation</div>
+      <div class="metric-sub" id="stdMain">—</div>
+      <div class="metric-mini" id="stdSub">—</div>
+    </div>
+  </div>
+
   <!-- ================= RESULTS ================= -->
   <section id="results" class="results" hidden aria-label="Results">
 
-    <!-- Key metric cards -->
-    <div class="metric-grid">
-      <div class="metric-card glass anim-pop" style="--i:0">
-        <div class="metric-icon">Σx/n</div>
-        <div class="metric-label">Mean</div>
-        <div class="metric-value" id="meanVal">—</div>
-      </div>
-      <div class="metric-card glass anim-pop" style="--i:1">
-        <div class="metric-icon">✓</div>
-        <div class="metric-label">Median</div>
-        <div class="metric-value" id="medianVal">—</div>
-      </div>
-      <div class="metric-card glass anim-pop" style="--i:2">
-        <div class="metric-icon">★</div>
-        <div class="metric-label">Mode</div>
-        <div class="metric-value" id="modeVal">—</div>
-      </div>
-      <div class="metric-card glass anim-pop" style="--i:3">
-        <div class="metric-icon">σ</div>
-        <div class="metric-label">Std Deviation</div>
-        <div class="metric-sub" id="stdMain">—</div>
-        <div class="metric-mini" id="stdSub">—</div>
-      </div>
-    </div>
 
     <!-- Detail table -->
     <section class="card glass anim-pop" id="fullStatsCard" style="--i:4">
@@ -154,10 +154,16 @@
       <div class="note" id="stdNote"></div>
     </section>
 
+    <!-- Step-by-step solution -->
+    <section class="card glass anim-pop" id="solutionCard" style="--i:7">
+      <div class="card-head"><h2><span class="step-dot" id="solDot">3</span> Solution</h2></div>
+      <div id="solutionBody"></div>
+    </section>
+
     <!-- Histogram -->
     <section class="card glass anim-pop" style="--i:5">
       <div class="card-head">
-        <h2><span class="step-dot" id="distDot">3</span> Distribution</h2>
+        <h2><span class="step-dot" id="distDot">4</span> Distribution</h2>
         <span class="hint" id="binInfo"></span>
       </div>
       <div class="chart-wrap">
@@ -165,25 +171,7 @@
       </div>
     </section>
 
-    <!-- Step-by-step solution -->
-    <section class="card glass anim-pop" id="solutionCard" style="--i:7">
-      <div class="card-head"><h2><span class="step-dot" id="solDot">4</span> Solution</h2></div>
-      <div id="solutionBody"></div>
-    </section>
 
-
-    <!-- Frequency table -->
-    <section class="card glass anim-pop" id="freqCard" style="--i:6">
-      <div class="card-head"><h2>Frequency Table</h2></div>
-      <div class="table-wrap freq-wrap">
-        <table class="freq-table">
-          <thead>
-            <tr><th>Value</th><th>Count</th><th>Share</th><th>Bar</th></tr>
-          </thead>
-          <tbody id="freqBody"></tbody>
-        </table>
-      </div>
-    </section>
 
   </section>
 
@@ -207,5 +195,6 @@
 
 <script src="js/script.js"></script>
 <script src="js/grouped.js"></script>
+<script src="js/bg.js"></script>
 </body>
 </html>

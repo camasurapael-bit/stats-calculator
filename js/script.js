@@ -363,7 +363,6 @@ function calculate() {
     : `sample s = ${fmt(r.stdSample)}`;
 
   renderTable(r);
-  renderFreq(r, values);
   renderHistogram(values, r);
   $("stdNote").textContent = "σ divides by n (whole population) · s divides by n−1 (sample estimate).";
 
