@@ -220,3 +220,28 @@ body.pad-open .app { padding-bottom: 270px; }
 @keyframes dropIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
 .app-header { animation: dropIn .6s cubic-bezier(.22,1,.36,1) both; }
 .input-card { animation: popIn .7s .12s cubic-bezier(.22,1,.36,1) both; }
+
+/* ================================================================
+   MOBILE FIRST SCREEN: fill the whole screen exactly (no empty gap, no scroll)
+   before Calculate. The input box stretches, KPI tiles are full size again.
+   ================================================================ */
+@media (max-width: 640px) {
+  /* full-size KPI tiles (icon on top, big number) */
+  #metricGrid .metric-card { display: block; padding: 12px 14px 11px; border-radius: 20px; }
+  #metricGrid .metric-icon { width: 34px; height: 34px; margin: 0 0 8px; border-radius: 11px; font-size: .7rem; }
+  #metricGrid .metric-label { font-size: .62rem; }
+  #metricGrid .metric-value, #metricGrid .metric-sub { font-size: 1.75rem; margin-top: 4px; }
+  #metricGrid .metric-mini { font-size: .62rem; margin-top: 5px; }
+
+  /* idle state = results still hidden */
+  .app:has(.results[hidden]) { height: 100vh; height: 100dvh; padding-bottom: 10px; }
+  .app:has(.results[hidden]) .app-header,
+  .app:has(.results[hidden]) #metricGrid { flex: 0 0 auto; }
+  .app:has(.results[hidden]) .input-card { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+  .app:has(.results[hidden]) .input-card > * { flex: 0 0 auto; }
+  .app:has(.results[hidden]) #rawBlock { flex: 1 1 auto; min-height: 0; display: flex; }
+  .app:has(.results[hidden]) #rawBlock .data-input { flex: 1 1 auto; height: auto; min-height: 60px; }
+  .app:has(.results[hidden]) #groupedBlock { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  /* number pad open: give the room to the input, hide the KPI tiles behind it */
+  body.pad-open .app:has(.results[hidden]) #metricGrid { display: none; }
+}
