@@ -35,4 +35,12 @@
     t = setTimeout(() => [calc, fab].forEach(b => { b.innerHTML = b.dataset.label; b.classList.remove("pulse"); }), 1100);
   }
   calc.addEventListener("click", () => setTimeout(flash, 40));
+
+  /* after Calculate (button or floating button) go back to the result boxes (Mean / Median / Mode / Std Dev) */
+  function toBoxes() {
+    const res = $("results"), grid = $("metricGrid"), err = $("inputError");
+    if (!grid || !res || res.hidden || (err && !err.hidden)) return;   // nothing calculated -> stay put
+    grid.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  calc.addEventListener("click", () => setTimeout(toBoxes, 120));
 })();

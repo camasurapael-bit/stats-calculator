@@ -22,7 +22,7 @@
     g("metricGrid").classList.add("is-empty");
   }
   const showCards = () => g("metricGrid").classList.remove("is-empty");
-  const toCards = () => { if (window.innerWidth < 760) g("metricGrid").scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const toCards = () => {}; // scrolling to the result boxes is handled in ui.js
 
   /* ---------- variance table + s², s, σ², σ ---------- */
   function varianceBlock(rows, mean, n, withClass) {
@@ -220,7 +220,7 @@
     g("solutionBody").innerHTML = LEGEND(n) + html;
     g("fullStatsCard").hidden = true;
     g("solDot").textContent = "2"; g("distDot").textContent = "3";
-    state.last = { r: {}, values: [], grouped: C };
+    state.last = { r: {}, values: [], grouped: C, stat: { mean, median: med, modes: [mo] } };
     res.hidden = false;
     renderHistogram(null, null);
     toCards();

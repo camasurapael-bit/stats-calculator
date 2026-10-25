@@ -26,3 +26,8 @@
   .metric-grid { margin-bottom: 12px; }
   .x-cv { background: #fff !important; border-color: #ccc !important; }
 }
+
+/* mean / median / mode legend */
+.x-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: .8rem; color: var(--text-dim); }
+.x-legend .lg { display: inline-flex; align-items: center; gap: 7px; }
+.x-legend i { display: inline-block; width: 24px; height: 0; border-top: 3px var(--d, solid) var(--c); }

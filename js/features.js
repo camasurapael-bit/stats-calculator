@@ -25,7 +25,7 @@
   const charts = mk("section", "card glass x-card", `<div class="card-head"><h2><span class="step-dot">★</span> More Charts</h2></div>
     <h3 class="x-h">Box plot</h3><div class="x-cv"><canvas id="cvBox"></canvas></div>
     <h3 class="x-h">Ogive (cumulative frequency)</h3><div class="x-cv"><canvas id="cvOgive"></canvas></div>
-    <h3 class="x-h">Frequency polygon</h3><div class="x-cv"><canvas id="cvPoly"></canvas></div>
+    <h3 class="x-h">Frequency polygon</h3><div class="x-cv"><canvas id="cvPoly"></canvas></div><div class="x-legend" id="cmmLegend2"></div>
     <h3 class="x-h">Pie chart (relative frequency)</h3><div class="x-cv"><canvas id="cvPie"></canvas></div>`);
   results.appendChild(charts);
 
@@ -112,7 +112,67 @@
 
   /* ---------- charts ---------- */
   function setup(cv, h) { const dpr = window.devicePixelRatio || 1, w = cv.parentElement.clientWidth || 320; cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px"; const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.font = "11px system-ui, sans-serif"; return { c, w, h }; }
-  function line(cv, pts) {
+  /* ---------- mean / median / mode markers ---------- */
+  const MC = { mean: "#ffd54a", median: "#4ade80", mode: "#f472b6" };
+  function cmm(L) {
+    if (L.grouped) return L.stat;
+    const r = L.r;
+    return { mean: r.mean, median: r.median, modes: r.mode.type === "none" ? [] : r.mode.modes.slice(0, 6) };
+  }
+  function drawMarks(c, X, y0, y1, m) {
+    const items = [["mean", m.mean, [6, 4]], ["median", m.median, []], ...m.modes.map(v => ["mode", v, [2, 3]])];
+    items.forEach(([k, v, d]) => {
+      if (v == null || isNaN(v)) return;
+      c.save(); c.strokeStyle = MC[k]; c.lineWidth = 2; c.setLineDash(d);
+      c.beginPath(); c.moveTo(X(v), y0); c.lineTo(X(v), y1); c.stroke(); c.restore();
+    });
+  }
+  function legends(m) {
+    const lg = (k, t, d) => `<span class="lg"><i style="--c:${MC[k]};--d:${d}"></i>${t}</span>`;
+    const html = lg("mean", "Mean = " + F(m.mean), "dashed") + lg("median", "Median = " + F(m.median), "solid") +
+      lg("mode", m.modes.length ? "Mode = " + m.modes.map(F).join(", ") : "Mode = none", "dotted");
+    ["cmmLegend", "cmmLegend2"].forEach(id => { const e = $(id); if (e) e.innerHTML = html; });
+  }
+  const histWrap = $("histogram") && $("histogram").closest(".chart-wrap");
+  if (histWrap) { const d = document.createElement("div"); d.className = "x-legend"; d.id = "cmmLegend"; histWrap.after(d); }
+
+  function histMarks() {
+    const L = state.last; if (!L || $("results").hidden) return;
+    const cv = $("histogram"), w = parseFloat(cv.style.width), h = parseFloat(cv.style.height);
+    if (!w || !h) return;
+    const m = cmm(L), pad = { l: 36, r: 10, t: 14, b: 34 }, cw = w - pad.l - pad.r;
+    let X;
+    if (L.grouped) {
+      const C = L.grouped, bw = cw / C.length;
+      X = v => {
+        let i = C.findIndex(c => v >= c.lb && v < c.ub), f;
+        if (i < 0) { i = v < C[0].lb ? 0 : C.length - 1; f = v < C[0].lb ? 0 : 1; } else f = (v - C[i].lb) / C[i].w;
+        return pad.l + (i + f) * bw;
+      };
+    } else {
+      const r = L.r, u = [...new Set(L.values)].sort((a, b) => a - b);
+      if (u.length <= 12 && u.every(Number.isInteger)) {
+        const bw = cw / u.length;
+        X = v => {
+          let j = 0; while (j < u.length - 2 && v > u[j + 1]) j++;
+          const t = u.length === 1 ? 0 : Math.min(1, Math.max(0, (v - u[j]) / (u[j + 1] - u[j])));
+          return pad.l + (j + t + 0.5) * bw;
+        };
+      } else X = v => pad.l + (v - r.min) / ((r.max - r.min) || 1) * cw;
+    }
+    const c = cv.getContext("2d"), dpr = window.devicePixelRatio || 1;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawMarks(c, X, pad.t, h - pad.b, m);
+    legends(m);
+  }
+  const prevHist = window.renderHistogram;
+  window.renderHistogram = function () {
+    const res = prevHist.apply(this, arguments);
+    try { histMarks(); } catch (e) { console.error(e); }
+    return res;
+  };
+
+  function line(cv, pts, marks) {
     const { c, w, h } = setup(cv, 210), L = 36, R = 12, T = 10, B = 26, ac = css("--accent"), dim = css("--text-dim"), gl = css("--border");
     const x0 = Math.min(...pts.map(p => p[0])), x1 = Math.max(...pts.map(p => p[0])), y1 = Math.max(...pts.map(p => p[1])) || 1;
     const X = x => L + (x1 === x0 ? .5 : (x - x0) / (x1 - x0)) * (w - L - R), Y = y => h - B - y / y1 * (h - T - B);
@@ -123,6 +183,7 @@
     c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(X(p[0]), Y(p[1])) : c.moveTo(X(p[0]), Y(p[1])));
     c.lineTo(X(pts[pts.length - 1][0]), Y(0)); c.lineTo(X(pts[0][0]), Y(0)); c.closePath(); c.fillStyle = g; c.fill();
     c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(X(p[0]), Y(p[1])) : c.moveTo(X(p[0]), Y(p[1]))); c.strokeStyle = ac; c.lineWidth = 2.2; c.lineJoin = "round"; c.stroke();
+    if (marks) drawMarks(c, X, T, h - B, marks);
     c.fillStyle = ac; pts.length <= 40 && pts.forEach(p => { c.beginPath(); c.arc(X(p[0]), Y(p[1]), 3, 0, 7); c.fill(); });
   }
   function box(cv, s) {
@@ -131,6 +192,11 @@
     c.strokeStyle = dim; c.lineWidth = 1.6; c.beginPath(); c.moveTo(X(s.wl), mid); c.lineTo(X(s.wh), mid); c.moveTo(X(s.wl), mid - 9); c.lineTo(X(s.wl), mid + 9); c.moveTo(X(s.wh), mid - 9); c.lineTo(X(s.wh), mid + 9); c.stroke();
     c.fillStyle = ac + "55"; c.strokeStyle = ac; c.lineWidth = 2; c.beginPath(); c.rect(X(s.q1), mid - bh / 2, Math.max(2, X(s.q3) - X(s.q1)), bh); c.fill(); c.stroke();
     c.strokeStyle = tx; c.lineWidth = 3; c.beginPath(); c.moveTo(X(s.med), mid - bh / 2); c.lineTo(X(s.med), mid + bh / 2); c.stroke();
+    if (s.mean != null) {
+      const mx = X(s.mean); c.fillStyle = MC.mean; c.strokeStyle = css("--bg-0"); c.lineWidth = 1.5;
+      c.beginPath(); c.moveTo(mx, mid - 8); c.lineTo(mx + 8, mid); c.lineTo(mx, mid + 8); c.lineTo(mx - 8, mid); c.closePath(); c.fill(); c.stroke();
+      c.textAlign = "center"; c.fillText("x̄ = " + F(s.mean), Math.min(w - 40, Math.max(40, mx)), mid - bh / 2 - 6);
+    }
     c.fillStyle = "#ff6a3d"; (s.out || []).forEach(o => { c.beginPath(); c.arc(X(o), mid, 3.5, 0, 7); c.fill(); });
     c.fillStyle = dim; c.textAlign = "center"; [["min", s.wl], ["Q1", s.q1], ["Md", s.med], ["Q3", s.q3], ["max", s.wh]].forEach(([k, v], i) => { const x = Math.min(w - 20, Math.max(20, X(v))); c.fillText(k, x, mid + bh / 2 + 16 + (i % 2) * 14 - 0); c.fillText(F(v), x, mid + bh / 2 + 30 + (i % 2) * 14); });
   }
@@ -161,7 +227,7 @@
   let CH = null;
   function drawCharts() {
     if (!CH) return;
-    box($("cvBox"), CH.box); line($("cvOgive"), CH.ogive); line($("cvPoly"), CH.poly); pie($("cvPie"), CH.pie);
+    box($("cvBox"), CH.box); line($("cvOgive"), CH.ogive); line($("cvPoly"), CH.poly, CH.marks); pie($("cvPie"), CH.pie);
   }
 
   function rawCharts(r, v, fence) {
@@ -188,6 +254,7 @@
       if (!ok) { extra.hidden = true; return res; }
       if (L.grouped && L.grouped.length) { extra.hidden = false; grpCharts(L.grouped, grpExtras(L.grouped)); }
       else { extra.hidden = true; G = null; rawCharts(L.r, L.values, rawExtras(L.r, L.values)); }
+      CH.marks = cmm(L); CH.box.mean = CH.marks.mean; legends(CH.marks);
       applySd(); zUpdate(); requestAnimationFrame(drawCharts);
     } catch (e) { console.error(e); }
     return res;

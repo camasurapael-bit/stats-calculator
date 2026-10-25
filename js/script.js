@@ -266,20 +266,7 @@ function drawValueBars(ctx, w, h, entries, total, r) {
     ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
     ctx.textAlign = "right"; ctx.fillText(String(Math.round((maxC * i) / 4)), pad.l - 6, y + 4);
   }
-  // mean line
   const n = entries.length, bw = cw / n;
-  const meanX = pad.l + ((r.mean - entries[0][0]) / Math.max(1, (entries[n - 1][0] - entries[0][0]))) * (cw - bw) + bw / 2;
-  const bw2 = cw / Math.max(1, (entries[n - 1][0] - entries[0][0]) || 1);
-  const exactMeanX = pad.l + (r.mean - entries[0][0]) * bw2 + bw / 2;
-  const mx = (entries.length === 1) ? pad.l + bw / 2 : exactMeanX;
-  if (mx >= pad.l && mx <= w - pad.r) {
-    ctx.strokeStyle = "rgba(233,167,14,0.9)";
-    ctx.setLineDash([5, 4]);
-    ctx.beginPath(); ctx.moveTo(mx, pad.t); ctx.lineTo(mx, pad.t + ch); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(233,167,14,1)"; ctx.textAlign = "center";
-    ctx.fillText("mean " + fmt(r.mean), mx, pad.t - 2 > 10 ? pad.t - 2 : 10);
-  }
   entries.forEach(([val, c], i) => {
     const bh = (c / maxC) * ch;
     const x = pad.l + i * bw, y = pad.t + ch - bh;
@@ -389,7 +376,6 @@ function calculate() {
   renderHistory();
 
   toast("✓ Calculated " + r.n + " value" + (r.n > 1 ? "s" : ""));
-  if (window.innerWidth < 760) resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 /* ---------------- Copy / export ---------------- */
