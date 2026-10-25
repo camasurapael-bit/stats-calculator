@@ -6,8 +6,8 @@
   const ctx = cv.getContext("2d");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SYM = ["Σ", "π", "x̄", "σ", "√", "∫", "±", "μ", "%", "n", "Δ", "∞", "÷", "×", "s²", "f(x)", "z", "N", "Σfx", "68%", "95%", "x²", "Md", "Mo"];
-  const DARK = [[140, 185, 255], [167, 139, 250], [34, 211, 238], [251, 146, 60]];
-  const LIGHT = [[37, 99, 235], [124, 58, 237], [8, 145, 178], [249, 115, 22]];
+  const DARK = [[255, 150, 60], [255, 190, 110], [255, 122, 61], [255, 214, 140]];
+  const LIGHT = [[234, 106, 8], [245, 140, 30], [220, 90, 40], [200, 120, 20]];
   let W = 0, H = 0, t = 0, items = [];
   const isLight = () => document.documentElement.getAttribute("data-theme") === "light";
 

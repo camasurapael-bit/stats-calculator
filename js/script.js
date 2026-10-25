@@ -210,9 +210,9 @@ function renderHistogram(values, r) {
 }
 
 const isLight = () => document.documentElement.getAttribute("data-theme") === "light";
-const axisC = () => isLight() ? "#566a94" : "#93a0bd";
-const gridC = () => isLight() ? "rgba(30,60,120,0.12)" : "rgba(255,255,255,0.08)";
-const valC = () => isLight() ? "#1e3a8a" : "#cfe0ff";
+const axisC = () => isLight() ? "#867364" : "#b4a79c";
+const gridC = () => isLight() ? "rgba(120,70,30,0.12)" : "rgba(255,255,255,0.08)";
+const valC = () => isLight() ? "#8a4f1e" : "#ffe5cf";
 
 function styleCtx(ctx) {
     ctx.fillStyle = axisC();
@@ -238,8 +238,8 @@ function drawBars(ctx, w, h, counts, edges) {
     const bh = (c / maxC) * ch;
     const x = pad.l + i * bw, y = pad.t + ch - bh;
     const g = ctx.createLinearGradient(0, y, 0, pad.t + ch);
-    g.addColorStop(0, "rgba(37,99,235,0.95)");
-    g.addColorStop(1, "rgba(96,165,250,0.35)");
+    g.addColorStop(0, "rgba(235,126,37,0.95)");
+    g.addColorStop(1, "rgba(250,165,96,0.35)");
     ctx.fillStyle = g;
     const gap = Math.min(4, bw * 0.12);
     roundRect(ctx, x + gap / 2, y, bw - gap, bh, 5);
@@ -273,19 +273,19 @@ function drawValueBars(ctx, w, h, entries, total, r) {
   const exactMeanX = pad.l + (r.mean - entries[0][0]) * bw2 + bw / 2;
   const mx = (entries.length === 1) ? pad.l + bw / 2 : exactMeanX;
   if (mx >= pad.l && mx <= w - pad.r) {
-    ctx.strokeStyle = "rgba(14,165,233,0.9)";
+    ctx.strokeStyle = "rgba(233,167,14,0.9)";
     ctx.setLineDash([5, 4]);
     ctx.beginPath(); ctx.moveTo(mx, pad.t); ctx.lineTo(mx, pad.t + ch); ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(14,165,233,1)"; ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(233,167,14,1)"; ctx.textAlign = "center";
     ctx.fillText("mean " + fmt(r.mean), mx, pad.t - 2 > 10 ? pad.t - 2 : 10);
   }
   entries.forEach(([val, c], i) => {
     const bh = (c / maxC) * ch;
     const x = pad.l + i * bw, y = pad.t + ch - bh;
     const g = ctx.createLinearGradient(0, y, 0, pad.t + ch);
-    g.addColorStop(0, "rgba(37,99,235,0.95)");
-    g.addColorStop(1, "rgba(96,165,250,0.35)");
+    g.addColorStop(0, "rgba(235,126,37,0.95)");
+    g.addColorStop(1, "rgba(250,165,96,0.35)");
     ctx.fillStyle = g;
     const gap = Math.min(6, bw * 0.25);
     roundRect(ctx, x + gap / 2, y, bw - gap, bh, 5);
@@ -485,7 +485,7 @@ const THEME_KEY = "statsTheme";
 function syncThemeToggle() {
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", isLight ? "#f5f9ff" : "#060d20");
+  if (meta) meta.setAttribute("content", isLight ? "#fffaf5" : "#19130d");
   const btn = document.getElementById("themeToggle");
   if (btn) {
     btn.setAttribute("aria-pressed", String(isLight));

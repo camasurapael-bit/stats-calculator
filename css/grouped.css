@@ -12,13 +12,13 @@ input, select, textarea { font-size: 16px; } /* stops iOS focus-zoom */
 /* ===== Mode tabs ===== */
 .mode-tabs { display: flex; gap: 6px; padding: 5px; margin-bottom: 16px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; }
 .mode-tab { flex: 1; border: 0; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 650; padding: 10px 8px; border-radius: 10px; color: var(--text-dim); background: transparent; transition: all 0.2s; }
-.mode-tab.active { color: #fff; background: linear-gradient(135deg, #7c6cf5, #4fc3ff); box-shadow: 0 4px 16px var(--glow); }
+.mode-tab.active { color: #ffffff; background: linear-gradient(135deg, #f59a6c, #ff9e4f); box-shadow: 0 4px 16px var(--glow); }
 
 /* ===== Grouped input rows ===== */
 .g-row { display: grid; grid-template-columns: 1fr 1fr 1fr 40px; gap: 8px; margin-bottom: 8px; align-items: center; }
 .g-head span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); font-weight: 650; }
 .g-row input { width: 100%; min-width: 0; background: var(--input-bg); border: 1px solid var(--border); border-radius: 11px; color: var(--text); padding: 11px 10px; font-family: inherit; text-align: center; }
-.g-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,123,255,0.18); }
+.g-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,167,123,0.18); }
 .g-del { height: 40px; border: 1px solid var(--border); border-radius: 11px; background: var(--glass-strong); color: var(--text-dim); cursor: pointer; }
 .g-add { margin-top: 4px; }
 
@@ -53,7 +53,7 @@ input, select, textarea { font-size: 16px; } /* stops iOS focus-zoom */
 #solutionBody { counter-reset: step; }
 .sol-h { display: flex; align-items: center; gap: 10px; margin: 26px 0 10px; padding-top: 18px; border-top: 1px dashed var(--border); font-size: 1rem; color: var(--text); }
 .sol-h:first-of-type { border-top: 0; padding-top: 0; margin-top: 18px; }
-.sol-h::before { counter-increment: step; content: counter(step); flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 9px; font-size: 0.76rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.sol-h::before { counter-increment: step; content: counter(step); flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 9px; font-size: 0.76rem; font-weight: 700; color: #ffffff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
 .eq { background: var(--glass-strong); border: 1px solid var(--grid-line); border-radius: 12px; padding: 6px 12px; }
 .sol-table { border: 1px solid var(--grid-line); border-radius: 12px; overflow: hidden; border-collapse: separate; border-spacing: 0; }
 .sol-table tbody tr:nth-child(even) td { background: var(--glass); }

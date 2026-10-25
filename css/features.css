@@ -1,0 +1,28 @@
+/* extra features */
+.x-card .card-head { margin-bottom: 10px; }
+.x-h { margin: 18px 0 8px; font-size: .9rem; font-weight: 650; color: var(--text-dim); }
+.x-cv { border: 1px solid var(--grid-line); border-radius: 16px; background: var(--input-bg); overflow: hidden; }
+.x-cv canvas { display: block; }
+.x-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 12px; padding: 10px 12px; border: 1px solid var(--grid-line); border-radius: 14px; font-size: .86rem; }
+.x-tools label { color: var(--text-dim); }
+.x-tools input { width: 92px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font: inherit; font-size: 16px; text-align: center; }
+.x-tools input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.x-tools b { color: var(--accent-2); font-variant-numeric: tabular-nums; }
+.x-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.x-btns .btn { flex: 1 1 160px; }
+.sd-toggle { display: inline-flex; margin-top: 6px; padding: 2px; border-radius: 999px; background: var(--input-bg); border: 1px solid var(--grid-line); }
+.sd-toggle button { border: 0; cursor: pointer; font: inherit; font-size: .62rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; color: var(--text-dim); background: transparent; }
+.sd-toggle button.on { color: #1c0f04; background: linear-gradient(135deg, #ff8a1f, #ffb25e); }
+.csv-chip { position: absolute; right: 10px; bottom: 10px; z-index: 2; border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; font: inherit; font-size: .72rem; font-weight: 650; color: var(--text-dim); background: var(--glass-strong); cursor: pointer; }
+.csv-chip:hover { color: var(--text); border-color: var(--accent); }
+
+@media print {
+  html, body { background: #fff !important; color: #000 !important; }
+  body::before, .bg-shapes, #mathBg, .app-header, .input-card, .history-card, .app-footer, .x-export, .calc-fab, .toast, .csv-chip, .sd-toggle, .btn-copy, .zbox, .x-tools { display: none !important; }
+  .app { height: auto !important; overflow: visible !important; padding: 0 !important; }
+  .card, .metric-card { background: #fff !important; box-shadow: none !important; border: 1px solid #ccc !important; backdrop-filter: none !important; color: #000 !important; break-inside: avoid; }
+  .card::after, .card::before, .metric-card::after, .metric-card::before { display: none !important; }
+  * { color: #000 !important; -webkit-text-fill-color: #000 !important; text-shadow: none !important; }
+  .metric-grid { margin-bottom: 12px; }
+  .x-cv { background: #fff !important; border-color: #ccc !important; }
+}
