@@ -447,7 +447,7 @@ const SAMPLES = {
   "4": "12, 15, 22, 18, 25, 30, 14, 19, 27, 21, 16, 23, 29, 17, 24, 20, 26, 13, 28, 19, 22, 15, 31, 18, 25, 21, 17, 24, 20, 27, 16, 23, 19, 26, 14, 22, 30, 18, 25, 21, 17, 28, 20, 24, 15, 29, 19, 23, 26, 22"
 };
 document.querySelectorAll(".btn-chip[data-sample]").forEach(b =>
-  b.addEventListener("click", () => { inputEl.value = SAMPLES[b.dataset.sample]; calculate(); }));
+  b.addEventListener("click", () => { inputEl.value = window.fmtLines ? fmtLines(SAMPLES[b.dataset.sample]) : SAMPLES[b.dataset.sample]; calculate(); }));
 
 historyList.addEventListener("click", e => {
   const btn = e.target.closest("button");
@@ -455,7 +455,7 @@ historyList.addEventListener("click", e => {
   const hist = loadHistory();
   if (btn.dataset.restore !== undefined) {
     const h = hist[+btn.dataset.restore];
-    if (h) { inputEl.value = h.values.join(", "); calculate(); }
+    if (h) { inputEl.value = window.fmtLines ? fmtLines(h.values.join(", ")) : h.values.join(", "); calculate(); }
   } else if (btn.dataset.remove !== undefined) {
     hist.splice(+btn.dataset.remove, 1);
     saveHistory(hist);

@@ -33,3 +33,9 @@
 .x-legend i { display: inline-block; width: 24px; height: 0; border-top: 3px var(--d, solid) var(--c); }
 
 .input-card { scroll-margin-top: 84px; }
+
+/* data box: bigger, grows with the text, scrolls inside after a limit */
+.data-input { max-height: 50dvh; overflow-y: auto; }
+@media (max-width: 640px) {
+  .app:has(.results[hidden]) #rawBlock .data-input { min-height: clamp(110px, 18dvh, 150px); max-height: 34dvh; }
+}

@@ -271,7 +271,7 @@
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => note("🔗 Link copied"), () => prompt("Copy this link:", url));
   });
   const m = /^#d=(.+)$/.exec(location.hash);
-  if (m) { try { $("dataInput").value = atob(decodeURIComponent(m[1])); setTimeout(() => window.calculate(), 350); } catch (e) {} }
+  if (m) { try { $("dataInput").value = window.fmtLines ? fmtLines(atob(decodeURIComponent(m[1]))) : atob(decodeURIComponent(m[1])); setTimeout(() => window.calculate(), 350); } catch (e) {} }
 
   /* ---------- installable app (works offline) ---------- */
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
