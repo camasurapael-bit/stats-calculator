@@ -25,7 +25,8 @@
   const charts = mk("section", "card glass x-card", `<div class="card-head"><h2><span class="step-dot">★</span> More Charts</h2></div>
     <h3 class="x-h">Box plot</h3><div class="x-cv"><canvas id="cvBox"></canvas></div>
     <h3 class="x-h">Ogive (cumulative frequency)</h3><div class="x-cv"><canvas id="cvOgive"></canvas></div>
-    <h3 class="x-h">Frequency polygon</h3><div class="x-cv"><canvas id="cvPoly"></canvas></div>`);
+    <h3 class="x-h">Frequency polygon</h3><div class="x-cv"><canvas id="cvPoly"></canvas></div>
+    <h3 class="x-h">Pie chart (relative frequency)</h3><div class="x-cv"><canvas id="cvPie"></canvas></div>`);
   results.appendChild(charts);
 
   const tools = mk("section", "card glass x-card x-export", `<div class="card-head"><h2><span class="step-dot">⇪</span> Export &amp; Share</h2></div>
@@ -133,10 +134,34 @@
     c.fillStyle = "#ff6a3d"; (s.out || []).forEach(o => { c.beginPath(); c.arc(X(o), mid, 3.5, 0, 7); c.fill(); });
     c.fillStyle = dim; c.textAlign = "center"; [["min", s.wl], ["Q1", s.q1], ["Md", s.med], ["Q3", s.q3], ["max", s.wh]].forEach(([k, v], i) => { const x = Math.min(w - 20, Math.max(20, X(v))); c.fillText(k, x, mid + bh / 2 + 16 + (i % 2) * 14 - 0); c.fillText(F(v), x, mid + bh / 2 + 30 + (i % 2) * 14); });
   }
+  const col = (i, n) => `hsl(${(24 + i * 360 / n) % 360}, 72%, 56%)`;
+  function pie(cv, items) {
+    const tot = sum(items.map(i => i.f)) || 1, w = cv.parentElement.clientWidth || 320;
+    const R = Math.min(95, w / 2 - 16), rowH = 18, h = R * 2 + 36 + items.length * rowH;
+    const { c } = setup(cv, h);
+    const cx = w / 2, cy = R + 14, dim = css("--text-dim"), bg = css("--bg-1"), L = 16;
+    let a0 = -Math.PI / 2;
+    items.forEach((it, i) => {
+      const a1 = a0 + it.f / tot * 2 * Math.PI;
+      c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, a0, a1); c.closePath();
+      c.fillStyle = col(i, items.length); c.fill(); c.strokeStyle = bg; c.lineWidth = 2; c.stroke();
+      if (it.f / tot > 0.05) {
+        const m = (a0 + a1) / 2; c.fillStyle = "#fff"; c.textAlign = "center";
+        c.fillText(F(it.f / tot * 100) + "%", cx + Math.cos(m) * R * 0.65, cy + Math.sin(m) * R * 0.65 + 4);
+      }
+      a0 = a1;
+    });
+    c.textAlign = "left";
+    items.forEach((it, i) => {
+      const y = cy + R + 24 + i * rowH;
+      c.fillStyle = col(i, items.length); c.fillRect(L, y - 9, 10, 10);
+      c.fillStyle = dim; c.fillText(`${it.label}  ·  f = ${it.f} (${F(it.f / tot * 100)}%)`, L + 16, y);
+    });
+  }
   let CH = null;
   function drawCharts() {
     if (!CH) return;
-    box($("cvBox"), CH.box); line($("cvOgive"), CH.ogive); line($("cvPoly"), CH.poly);
+    box($("cvBox"), CH.box); line($("cvOgive"), CH.ogive); line($("cvPoly"), CH.poly); pie($("cvPie"), CH.pie);
   }
 
   function rawCharts(r, v, fence) {
@@ -145,11 +170,13 @@
     const k = Math.max(3, Math.ceil(1 + Math.log2(n))), a = s[0], b = s[n - 1], w = (b - a) / k || 1, cnt = new Array(k).fill(0);
     s.forEach(x => cnt[Math.min(k - 1, Math.floor((x - a) / w))]++);
     const poly = [[a - w / 2, 0], ...cnt.map((f, j) => [a + w * (j + .5), f]), [b + w / 2, 0]];
-    CH = { box: { min: a, max: b, wl: ins[0], wh: ins[ins.length - 1], q1: r.q1, med: r.median, q3: r.q3, out: fence.out }, ogive: [[a, 0], ...cum], poly };
+    CH = { box: { min: a, max: b, wl: ins[0], wh: ins[ins.length - 1], q1: r.q1, med: r.median, q3: r.q3, out: fence.out }, ogive: [[a, 0], ...cum], poly,
+      pie: cnt.map((f, j) => ({ label: `${F(a + w * j)} – ${F(a + w * (j + 1))}`, f })) };
   }
   function grpCharts(C, q) {
     const w = C[0].w; CH = { box: { min: C[0].lb, max: C[C.length - 1].ub, wl: C[0].lb, wh: C[C.length - 1].ub, q1: q[0], med: q[1], q3: q[2], out: [] },
-      ogive: [[C[0].lb, 0], ...C.map(c => [c.ub, c.cf])], poly: [[C[0].x - w, 0], ...C.map(c => [c.x, c.f]), [C[C.length - 1].x + w, 0]] };
+      ogive: [[C[0].lb, 0], ...C.map(c => [c.ub, c.cf])], poly: [[C[0].x - w, 0], ...C.map(c => [c.x, c.f]), [C[C.length - 1].x + w, 0]],
+      pie: C.map(c => ({ label: `${F(c.lb)} – ${F(c.ub)}`, f: c.f })) };
   }
 
   /* ---------- hook into every calculation ---------- */
