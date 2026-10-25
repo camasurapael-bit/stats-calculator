@@ -189,3 +189,71 @@ body::before {
   .metric-value, .metric-sub { font-size: 1.8rem; margin-top: 4px; }
   .metric-mini { font-size: .7rem; }
 }
+
+/* ================================================================
+   PHONE, FIRST SCREEN (before Calculate) — everything fits, no scrolling
+   A balanced fit: smaller than the roomy layout, bigger than the old squeezed one.
+   After Calculate the page goes back to the normal scrolling layout.
+   ================================================================ */
+@media (max-width: 640px) {
+  .app:has(.results[hidden]) {
+    height: 100dvh; min-height: 0; overflow: hidden; gap: 10px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .app:has(.results[hidden]) .app-footer { display: none; }
+
+  .app:has(.results[hidden]) .app-header { top: 0; padding: 8px 12px; border-radius: 18px; }
+  .app:has(.results[hidden]) .logo-icon { width: 38px; height: 38px; border-radius: 11px; }
+  .app:has(.results[hidden]) .logo-icon img { width: 38px; height: 38px; }
+  .app:has(.results[hidden]) .app-header h1 { font-size: 1.08rem; }
+  .app:has(.results[hidden]) .subtitle { display: none; }
+  .app:has(.results[hidden]) .theme-toggle { width: 38px; height: 38px; }
+
+  /* the input card takes whatever height is left; the data box stretches into it */
+  .app:has(.results[hidden]) .input-card { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 14px 14px 12px; border-radius: 22px; }
+  .app:has(.results[hidden]) .input-card > * { flex: 0 0 auto; }
+  .app:has(.results[hidden]) .input-card .card-head { margin-bottom: 10px; gap: 2px; }
+  .app:has(.results[hidden]) .input-card .card-head h2 { font-size: 1.02rem; }
+  .app:has(.results[hidden]) .card-head .hint { font-size: .72rem; line-height: 1.35; }
+  .app:has(.results[hidden]) .mode-tabs { margin-bottom: 10px; padding: 4px; }
+  .app:has(.results[hidden]) .mode-tab { padding: 9px 4px; font-size: .86rem; }
+
+  .app:has(.results[hidden]) #rawBlock:not([hidden]) { flex: 1 1 auto; min-height: 84px; display: flex; }
+  .app:has(.results[hidden]) #rawBlock .data-input { flex: 1 1 auto; height: auto; min-height: 0; width: 100%; padding: 12px 14px; resize: none; }
+  .app:has(.results[hidden]) #groupedBlock:not([hidden]) { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .app:has(.results[hidden]) .g-row { margin-bottom: 6px; }
+  .app:has(.results[hidden]) .g-row input { padding: 10px 6px; }
+  .app:has(.results[hidden]) .g-del { height: 42px; }
+
+  .app:has(.results[hidden]) .controls { margin-top: 10px; grid-template-columns: 92px 70px 1fr; gap: 8px; align-items: end; }
+  .app:has(.results[hidden]) .precision-group { order: 1; }
+  .app:has(.results[hidden]) #clearBtn { order: 2; grid-column: auto; }
+  .app:has(.results[hidden]) #calcBtn { order: 3; grid-column: auto; }
+  .app:has(.results[hidden]) .control-group label { font-size: .58rem; letter-spacing: .03em; white-space: nowrap; margin-bottom: 4px; }
+  .app:has(.results[hidden]) .glass-select { height: 46px; padding: 0 8px; font-size: .95rem; }
+  .app:has(.results[hidden]) #clearBtn { height: 46px; padding: 0; font-size: .88rem; }
+  .app:has(.results[hidden]) #calcBtn { height: 46px; padding: 0 8px; font-size: .95rem; }
+
+  /* samples: one tidy row of four */
+  .app:has(.results[hidden]) .sample-row { grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; padding-top: 10px; }
+  .app:has(.results[hidden]) #groupSamples { grid-template-columns: 1fr 1fr; }
+  .app:has(.results[hidden]) .sample-row .hint { font-size: .74rem; }
+  .app:has(.results[hidden]) .card .sample-row .btn-chip { padding: 9px 2px; font-size: .7rem; letter-spacing: 0; }
+  .app:has(.results[hidden]) #groupSamples .btn-chip { font-size: .76rem; }
+
+  /* KPI tiles: short and wide */
+  .app:has(.results[hidden]) .metric-grid { gap: 8px; flex: 0 0 auto; }
+  .app:has(.results[hidden]) .metric-card { padding: 10px 12px 12px; border-radius: 16px; }
+  .app:has(.results[hidden]) .metric-icon { display: none; }
+  .app:has(.results[hidden]) .metric-label { font-size: .64rem; }
+  .app:has(.results[hidden]) .metric-value, .app:has(.results[hidden]) .metric-sub { font-size: 1.35rem; margin-top: 2px; }
+  .app:has(.results[hidden]) .metric-mini { display: none; }
+}
+
+/* short phones: trim a bit more so it still fits */
+@media (max-width: 640px) and (max-height: 720px) {
+  .app:has(.results[hidden]) .input-card .card-head .hint { display: none; }
+  .app:has(.results[hidden]) .app-header { padding: 6px 10px; }
+  .app:has(.results[hidden]) .metric-card { padding: 8px 10px 10px; }
+  .app:has(.results[hidden]) .metric-value, .app:has(.results[hidden]) .metric-sub { font-size: 1.2rem; }
+}
