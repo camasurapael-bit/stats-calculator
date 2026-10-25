@@ -6,14 +6,19 @@
   if (!calc) return;
 
   const ARROW = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const UP = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
   const CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
   /* floating Calculate button: appears whenever the real one is scrolled out of view */
   const fab = document.createElement("button");
   fab.type = "button"; fab.id = "calcFab"; fab.className = "calc-fab";
-  fab.innerHTML = ARROW + "<span>Calculate</span>";
+  fab.innerHTML = UP + "<span>Enter Data</span>";
   document.body.appendChild(fab);
-  fab.addEventListener("click", () => calc.click());
+  /* tapping it takes you back up to the "Enter Your Data" card */
+  fab.addEventListener("click", () => {
+    const card = document.querySelector(".input-card");
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
   let inView = true;
   const sync = () => fab.classList.toggle("show", !inView);
@@ -26,13 +31,13 @@
   function flash() {
     const err = $("inputError");
     if (err && !err.hidden) return;                       // an error message is already showing
-    [calc, fab].forEach(b => {
+    [calc].forEach(b => {
       b.classList.remove("pulse"); void b.offsetWidth; b.classList.add("pulse");
       b.dataset.label = b.dataset.label || b.innerHTML;
       b.innerHTML = CHECK + "<span>Calculated</span>";
     });
     clearTimeout(t);
-    t = setTimeout(() => [calc, fab].forEach(b => { b.innerHTML = b.dataset.label; b.classList.remove("pulse"); }), 1100);
+    t = setTimeout(() => [calc].forEach(b => { b.innerHTML = b.dataset.label; b.classList.remove("pulse"); }), 1100);
   }
   calc.addEventListener("click", () => setTimeout(flash, 40));
 
